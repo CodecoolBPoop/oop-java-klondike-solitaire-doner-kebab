@@ -183,21 +183,26 @@ public class Game extends Pane {
 
     public void dealCards() {
         Collections.shuffle(deck);
+        ArrayList<Card> slidingCard = new ArrayList<>();
         Iterator<Card> deckIterator = deck.iterator();
-        for (int i=0; i < 7; i++) {
-            for (int j=0; j < i + 1; j++) {
-                Card card = deckIterator.next();
-                tableauPiles.get(i).addCard(card);
-                addMouseEventHandlers(card);
-                getChildren().add(card);
-                if (i == j) { card.flip(); }
-            }
-        }
-        deckIterator.forEachRemaining(card -> {
+        for (int i=0; i < 24; i++) {
+            Card card = deckIterator.next();
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
-        });
+        }
+        for (int i=0; i < 7; i++) {
+            for (int j=0; j < i + 1; j++) {
+                Card card = deckIterator.next();
+                stockPile.addCard(card);
+                addMouseEventHandlers(card);
+                getChildren().add(card);
+                if (i == j) { card.flip(); }
+                slidingCard.add(card);
+            }
+            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
+            slidingCard.clear();
+        }
     }
 
     public void setTableBackground(Image tableBackground) {
