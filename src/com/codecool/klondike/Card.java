@@ -78,8 +78,13 @@ public class Card extends ImageView {
     }
 
     public static boolean isOppositeColor(Card card1, Card card2) {
-        //TODO
-        return true;
+        if ((card1.suit == 1 || card1.suit == 2) && (card2.suit == 3 | card2.suit == 4)) {
+            return true;
+        }
+        if ((card1.suit == 3 || card1.suit == 4) && (card2.suit == 1 | card2.suit == 2)) {
+            return true;
+        }
+        return false;
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
@@ -97,7 +102,7 @@ public class Card extends ImageView {
     }
 
     public static void loadCardImages() {
-        cardBackImage = new Image("card_images/card_back1.png");
+        cardBackImage = new Image("card_images/card_back1.png", 150, 215, false, false);
         String suitName = "";
         for (int suit = 1; suit < 5; suit++) {
             switch (suit) {
