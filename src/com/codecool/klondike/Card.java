@@ -102,30 +102,67 @@ public class Card extends ImageView {
     }
 
     public static void loadCardImages() {
-        cardBackImage = new Image("card_images/card_back1.png", 150, 215, false, false);
-        String suitName = "";
-        for (int suit = 1; suit < 5; suit++) {
-            switch (suit) {
-                case 1:
-                    suitName = "hearts";
-                    break;
-                case 2:
-                    suitName = "diamonds";
-                    break;
-                case 3:
-                    suitName = "spades";
-                    break;
-                case 4:
-                    suitName = "clubs";
-                    break;
-            }
-            for (int rank = 1; rank < 14; rank++) {
-                String cardName = suitName + rank;
-                String cardId = "S" + suit + "R" + rank;
+        cardBackImage = new Image("card_images/card_back2.png", 150, 215, false, false);
+        for (Suit suit : Suit.values()) {
+            for (Rank rank : Rank.values()) {
+                String cardName = suit.toString() + rank;
+                String cardId = "S" + suit.getId() + "R" + rank;
                 String imageFileName = "card_images/" + cardName + ".png";
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
         }
     }
+    public enum Suit{
+        HEARTS ("hearts", "1"),
+        DIAMONDS ("diamonds","2"),
+        SPADES ("spades","3"),
+        CLUBS ("clubs","4");
+
+        private final String suit;
+        private final String id;
+        Suit(String suit, String id){
+            this.suit = suit;
+            this.id = id;
+        }
+
+        public String toString(){
+            return suit;
+        }
+
+        public String getId(){
+            return id;
+        }
+
+    }
+
+    public enum Rank{
+
+        TWO ("2"),
+        THREE ("3"),
+        FOUR ("4"),
+        FIVE ("5"),
+        SIX ("6"),
+        SEVEN ("7"),
+        EIGHT ("8"),
+        NINE ("9"),
+        TEN ("10"),
+        JACK ("11"),
+        QUEEN ("12"),
+        KING ("13"),
+        ACE ("1");
+
+        private final String rank;
+
+        Rank(String rank){
+            this.rank = rank;
+        }
+
+        public String toString(){
+            return rank;
+        }
+
+    }
+
+
 
 }
