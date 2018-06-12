@@ -44,6 +44,7 @@ public class Game extends Pane {
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
+
         }
     };
 
@@ -59,6 +60,8 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         srcPile = card.getContainingPile();
         validMoveSrcPile = srcPile;
+        System.out.println(validMoveSrcPile.getName());
+        System.out.println(validMoveSrcPile.numOfCards());
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
@@ -105,8 +108,9 @@ public class Game extends Pane {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-//            draggedCards = null;
+            draggedCards.clear();
         }
+
 
 
     };
@@ -186,9 +190,23 @@ public class Game extends Pane {
         }
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
+
+        if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
+            Card newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size());
+
+            System.out.println(validMoveSrcPile.getName());
+            if (newTopCard != null) {
+                newTopCard.flip();
+                System.out.println(validMoveSrcPile.numOfCards());
+            }
+        }
+
         draggedCards.clear();
-        Card newTopCard = validMoveSrcPile.getTopCard();
-        newTopCard.flip();
+
+
+
+
+
     }
 
 
