@@ -34,6 +34,8 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
 
+    private Pile validMoveSrcPile;
+
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
@@ -52,6 +54,11 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
+        Pile srcPile;
+
+        Card card = (Card) e.getSource();
+        srcPile = card.getContainingPile();
+        validMoveSrcPile = srcPile;
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
@@ -100,6 +107,8 @@ public class Game extends Pane {
             draggedCards.forEach(MouseUtil::slideBack);
 //            draggedCards = null;
         }
+
+
     };
 
     public boolean isGameWon() {
@@ -168,6 +177,8 @@ public class Game extends Pane {
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
+        Card newTopCard = validMoveSrcPile.getTopCard();
+        newTopCard.flip();
     }
 
 
