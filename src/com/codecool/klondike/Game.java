@@ -42,6 +42,18 @@ public class Game extends Pane {
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
+        } else if (e.getClickCount() == 2 && !card.isFaceDown()) {
+            Card currentPileTopCard = card.getContainingPile().getTopCard();
+            if (Card.isSameSuit(card, currentPileTopCard) &&
+                    card.getRank() == currentPileTopCard.getRank()) {
+                Pile destination = getValidFoundationDestinationPile(card);
+                if (destination != null) {
+                    ArrayList<Card> slideCard = new ArrayList<>();
+                    slideCard.add(card);
+                    MouseUtil.slideToDest(slideCard, destination);
+                    handleValidMove(card, destination);
+                }
+            }
         }
     };
 
@@ -70,7 +82,7 @@ public class Game extends Pane {
         List<Card> cardsOfActivePile = FXCollections.observableArrayList();
         cardsOfActivePile = activePile.getCards();
         boolean isUnder = false;
-        for (int i=0; i < cardsOfActivePile.size(); i++) {
+        for (int i = 0; i < cardsOfActivePile.size(); i++) {
             if (cardsOfActivePile.get(i) == card) {
                 isUnder = true;
             }
@@ -140,13 +152,12 @@ public class Game extends Pane {
             if (topCard == null && card.getRank() == 13) {
                 return true;
             } else {
-                if (topCard.getRank() - card.getRank() == 1 && Card.isOppositeColor(topCard, card)) {
-                    return true;
-                }
+                return topCard.getRank() - card.getRank() == 1 && Card.isOppositeColor(topCard, card);
             }
         }
         return false;
     }
+
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
         for (Pile pile : piles) {
@@ -163,6 +174,19 @@ public class Game extends Pane {
             return card.getBoundsInParent().intersects(pile.getBoundsInParent());
         else
             return card.getBoundsInParent().intersects(pile.getTopCard().getBoundsInParent());
+    }
+
+    private Pile getValidFoundationDestinationPile(Card card) {
+        Pile result = null;
+        for (Pile pile : foundationPiles) {
+            if (card.getRank() == 1 && pile.isEmpty()) {
+                result = pile;
+            } else if (!pile.isEmpty() && Card.isSameSuit(card, pile.getTopCard()) &&
+                    card.getRank() == pile.getTopCard().getRank() + 1) {
+                result = pile;
+            }
+        }
+        return result;
     }
 
     private void handleValidMove(Card card, Pile destPile) {
@@ -217,19 +241,21 @@ public class Game extends Pane {
         Collections.shuffle(deck);
         ArrayList<Card> slidingCard = new ArrayList<>();
         Iterator<Card> deckIterator = deck.iterator();
-        for (int i=0; i < 24; i++) {
+        for (int i = 0; i < 24; i++) {
             Card card = deckIterator.next();
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         }
-        for (int i=0; i < 7; i++) {
-            for (int j=0; j < i + 1; j++) {
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < i + 1; j++) {
                 Card card = deckIterator.next();
                 stockPile.addCard(card);
                 addMouseEventHandlers(card);
                 getChildren().add(card);
-                if (i == j) { card.flip(); }
+                if (i == j) {
+                    card.flip();
+                }
                 slidingCard.add(card);
             }
             MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
