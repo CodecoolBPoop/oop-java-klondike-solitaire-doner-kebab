@@ -122,5 +122,49 @@ public class Card extends ImageView {
             }
         }
     }
+    public enum Suit{
+        HEARTS ("hearts"),
+        DIAMONDS ("diamonds"),
+        SPADES ("spades"),
+        CLUBS ("clubs");
+
+        private final String suit;
+        Suit(String suit){
+            this.suit = suit;
+        }
+
+        public String toString(){
+            return suit;
+        }
+
+    }
+
+    public enum Rank{
+        ONE ("1"),
+        TWO ("2"),
+        THREE ("3"),
+        FOUR ("4"),
+        FIVE ("5"),
+        SIX ("6"),
+        SEVEN ("7"),
+        EIGHT ("8"),
+        NINE ("9"),
+        JACK ("J"),
+        QUEEN ("Q"),
+        KING ("K"),
+        ACE ("A");
+
+        private final String rank;
+        Rank(String rank){
+            this.rank = rank;
+        }
+
+        public String toString(){
+            return rank;
+        }
+
+    }
+
+
 
 }
