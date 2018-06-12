@@ -42,6 +42,12 @@ public class Game extends Pane {
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
+        } else if (e.getClickCount() == 2 && !card.isFaceDown()) {
+            Card currentPileTopCard = card.getContainingPile().getTopCard();
+            if (Card.isSameSuit(card, currentPileTopCard) &&
+                    card.getRank() == currentPileTopCard.getRank()) {
+                System.out.println("double clicked");
+            }
         }
     };
 
@@ -70,7 +76,7 @@ public class Game extends Pane {
         List<Card> cardsOfActivePile = FXCollections.observableArrayList();
         cardsOfActivePile = activePile.getCards();
         boolean isUnder = false;
-        for (int i=0; i < cardsOfActivePile.size(); i++) {
+        for (int i = 0; i < cardsOfActivePile.size(); i++) {
             if (cardsOfActivePile.get(i) == card) {
                 isUnder = true;
             }
@@ -129,6 +135,7 @@ public class Game extends Pane {
         //TODO
         return true;
     }
+
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
         for (Pile pile : piles) {
@@ -199,19 +206,21 @@ public class Game extends Pane {
         Collections.shuffle(deck);
         ArrayList<Card> slidingCard = new ArrayList<>();
         Iterator<Card> deckIterator = deck.iterator();
-        for (int i=0; i < 24; i++) {
+        for (int i = 0; i < 24; i++) {
             Card card = deckIterator.next();
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         }
-        for (int i=0; i < 7; i++) {
-            for (int j=0; j < i + 1; j++) {
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < i + 1; j++) {
                 Card card = deckIterator.next();
                 stockPile.addCard(card);
                 addMouseEventHandlers(card);
                 getChildren().add(card);
-                if (i == j) { card.flip(); }
+                if (i == j) {
+                    card.flip();
+                }
                 slidingCard.add(card);
             }
             MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
