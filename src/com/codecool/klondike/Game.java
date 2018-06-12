@@ -152,7 +152,7 @@ public class Game extends Pane {
             if (topCard == null && card.getRank() == 13) {
                 return true;
             } else {
-                return topCard.getRank() - card.getRank() == 1 && Card.isOppositeColor(topCard, card);
+                return topCard != null && topCard.getRank() - card.getRank() == 1 && Card.isOppositeColor(topCard, card);
             }
         }
         return false;
