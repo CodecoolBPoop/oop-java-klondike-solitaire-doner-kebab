@@ -207,7 +207,7 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-//        Collections.shuffle(deck);
+        Collections.shuffle(deck);
         ArrayList<Card> slidingCard = new ArrayList<>();
         Iterator<Card> deckIterator = deck.iterator();
         for (int i=0; i < 24; i++) {
