@@ -144,6 +144,16 @@ public class Game extends Pane {
                 return true;
             }
         }
+        if (destPile.getPileType() == Pile.PileType.TABLEAU) {
+            Card topCard = destPile.getTopCard();
+            if (topCard == null && card.getRank() == 13) {
+                return true;
+            } else {
+                if (topCard.getRank() - card.getRank() == 1 && Card.isOppositeColor(topCard, card)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
