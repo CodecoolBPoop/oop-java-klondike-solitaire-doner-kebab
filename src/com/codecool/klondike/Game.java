@@ -53,6 +53,8 @@ public class Game extends Pane {
                     MouseUtil.slideToDest(slideCard, destination);
                     doubleClick = true;
                     handleValidMove(card, destination);
+
+                    
                 }
             }
         }
