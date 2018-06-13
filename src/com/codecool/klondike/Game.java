@@ -219,8 +219,12 @@ public class Game extends Pane {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
         System.out.println(msg);
+        //System.out.println("Elements of validmovesrcpile: "+ validMoveSrcPile.getCards() + "validmovesrcpile: " + validMoveSrcPile.getName());
         MouseUtil.slideToDest(draggedCards, destPile);
-        System.out.println(validMoveSrcPile.getCards());
+
+
+        //System.out.println("Elements of validmovesrcpile: "+ validMoveSrcPile.getCards() + "validmovesrcpile: " + validMoveSrcPile.getName());
+
 
         if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
             Card newTopCard;

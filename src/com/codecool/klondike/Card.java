@@ -68,6 +68,7 @@ public class Card extends ImageView {
             Pile contPile;
             contPile = this.getContainingPile();
             contPile.removeSpecificCard(this);
+            System.out.println("Elements of contpile now: " + contPile.getCards() + " contpile name: " + contPile.getName());
         }else {
             this.getContainingPile().getCards().remove(this);
         }
