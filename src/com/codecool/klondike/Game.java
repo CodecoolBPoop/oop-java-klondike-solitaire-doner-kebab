@@ -114,7 +114,7 @@ public class Game extends Pane {
         if (pile != null) {
             handleValidMove(card, pile);
             if (isGameWon(card)) {
-                gameWon();
+                gameWon(card);
             }
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
@@ -122,7 +122,7 @@ public class Game extends Pane {
         }
     };
 
-    public boolean isGameWon(Card card) {
+    private boolean isGameWon(Card card) {
         for (Pile pile : foundationPiles) {
             if (pile.isEmpty())
                 return false;
@@ -139,8 +139,15 @@ public class Game extends Pane {
         return true;
     }
 
-    public void gameWon() {
+    private void gameWon(Card card) {
         System.out.println("You have won!");
+        removeMouseEventHandlers(card);
+        for (Pile pile : foundationPiles) {
+            List<Card> cards = pile.getCards();
+            for (Card pileCard : cards) {
+                removeMouseEventHandlers(pileCard);
+            }
+        }
     }
 
     public Game() {
@@ -154,6 +161,13 @@ public class Game extends Pane {
         card.setOnMouseDragged(onMouseDraggedHandler);
         card.setOnMouseReleased(onMouseReleasedHandler);
         card.setOnMouseClicked(onMouseClickedHandler);
+    }
+
+    public void removeMouseEventHandlers(Card card) {
+        card.setOnMousePressed(null);
+        card.setOnMouseDragged(null);
+        card.setOnMouseReleased(null);
+        card.setOnMouseClicked(null);
     }
 
     public void refillStockFromDiscard() {
