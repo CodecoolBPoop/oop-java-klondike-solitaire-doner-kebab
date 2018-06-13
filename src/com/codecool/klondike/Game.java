@@ -68,8 +68,8 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         srcPile = card.getContainingPile();
         validMoveSrcPile = srcPile;
-        System.out.println(validMoveSrcPile.getName());
-        System.out.println(validMoveSrcPile.numOfCards());
+//        System.out.println(validMoveSrcPile.getName());
+//        System.out.println(validMoveSrcPile.numOfCards());
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
@@ -108,24 +108,39 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
-        //TODO
         if (pile == null) {
             pile = getValidIntersectingPile(card, foundationPiles);
         }
         if (pile != null) {
             handleValidMove(card, pile);
+            if (isGameWon(card)) {
+                gameWon();
+            }
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
         }
-
-
-
     };
 
-    public boolean isGameWon() {
-        //TODO
-        return false;
+    public boolean isGameWon(Card card) {
+        for (Pile pile : foundationPiles) {
+            if (pile.isEmpty())
+                return false;
+            else if (pile.numOfCards() != 13) {
+                String kingRank = Card.Rank.valueOf("KING").toString();
+                String queenRank = Card.Rank.valueOf("QUEEN").toString();
+                String cardRank = String.valueOf(card.getRank());
+                String topCardRank = String.valueOf(pile.getTopCard().getRank());
+                if (!cardRank.equals(kingRank) || !topCardRank.equals(queenRank)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void gameWon() {
+        System.out.println("You have won!");
     }
 
     public Game() {
@@ -153,7 +168,6 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        //TODO
         if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
             Card topCard = destPile.getTopCard();
             if (topCard == null && card.getRank() == 1) {
@@ -226,13 +240,7 @@ public class Game extends Pane {
                 System.out.println(validMoveSrcPile.numOfCards());
             }
         }
-
         draggedCards.clear();
-
-
-
-
-
     }
 
 
@@ -269,29 +277,29 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-        Collections.shuffle(deck);
+//        Collections.shuffle(deck);
         ArrayList<Card> slidingCard = new ArrayList<>();
         Iterator<Card> deckIterator = deck.iterator();
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < 52; i++) {
             Card card = deckIterator.next();
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         }
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < i + 1; j++) {
-                Card card = deckIterator.next();
-                stockPile.addCard(card);
-                addMouseEventHandlers(card);
-                getChildren().add(card);
-                if (i == j) {
-                    card.flip();
-                }
-                slidingCard.add(card);
-            }
-            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
-            slidingCard.clear();
-        }
+//        for (int i = 0; i < 7; i++) {
+//            for (int j = 0; j < i + 1; j++) {
+//                Card card = deckIterator.next();
+//                stockPile.addCard(card);
+//                addMouseEventHandlers(card);
+//                getChildren().add(card);
+//                if (i == j) {
+//                    card.flip();
+//                }
+//                slidingCard.add(card);
+//            }
+//            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
+//            slidingCard.clear();
+//        }
     }
 
     public void setTableBackground(Image tableBackground) {
