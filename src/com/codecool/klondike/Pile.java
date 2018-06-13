@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 public class Pile extends Pane {
 
@@ -88,6 +89,20 @@ public class Pile extends Pane {
         GaussianBlur gaussianBlur = new GaussianBlur(10);
         setBackground(background);
         setEffect(gaussianBlur);
+    }
+
+    public void removeSpecificCard(Card cardToRemove){
+        /*for(Card card: cards){
+            if(Objects.equals(card,cardToRemove)){
+                cards.remove(card);
+            }
+        }*/
+
+        for(int i = 0; i < cards.size(); i++){
+            if(Objects.equals(cards.get(i), cardToRemove)){
+                cards.remove(i);
+            }
+        }
     }
 
     public enum PileType {
