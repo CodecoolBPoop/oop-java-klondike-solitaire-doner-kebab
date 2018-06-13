@@ -33,11 +33,22 @@ public class Game extends Pane {
 
     private Pile validMoveSrcPile;
     private boolean doubleClick = false;
+    private List<Move> previousMoves = new ArrayList<>();
+
+
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
+            //Part of UNDO
+            List<Card> discardedCard = new ArrayList<>();
+            discardedCard.add(card);
+            Move discardMove = new Move(discardedCard,stockPile);
+            previousMoves.add(discardMove);
+            System.out.println(previousMoves);
+            //-------
+
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -72,7 +83,7 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         srcPile = card.getContainingPile();
         validMoveSrcPile = srcPile;
-        System.out.println("On mouse pressed handler: " + validMoveSrcPile.getName());
+        //System.out.println("On mouse pressed handler: " + validMoveSrcPile.getName());
         //System.out.println(validMoveSrcPile.numOfCards());
     };
 
@@ -218,12 +229,32 @@ public class Game extends Pane {
         } else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
-        System.out.println(msg);
-        //System.out.println("Elements of validmovesrcpile: "+ validMoveSrcPile.getCards() + "validmovesrcpile: " + validMoveSrcPile.getName());
+        //System.out.println(msg);
+
+
+
+        //Part of UNDO
+        List<Card> currentDraggedCards = new ArrayList<>();
+        if(draggedCards.size() > 0) {
+            currentDraggedCards.addAll(draggedCards);
+        }else{
+            currentDraggedCards.add(card);
+        }
+
+        Move currentMove;
+        currentMove = new Move(currentDraggedCards,validMoveSrcPile);
+
+        previousMoves.add(currentMove);
+
+        System.out.println(previousMoves);
+        //----
+
+
         MouseUtil.slideToDest(draggedCards, destPile);
 
 
-        //System.out.println("Elements of validmovesrcpile: "+ validMoveSrcPile.getCards() + "validmovesrcpile: " + validMoveSrcPile.getName());
+
+
 
 
         if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
@@ -235,11 +266,9 @@ public class Game extends Pane {
                 newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size()+1);
             }
 
-            System.out.println("Handlevalidmove: " + validMoveSrcPile.getName());
+            //System.out.println("Handlevalidmove: " + validMoveSrcPile.getName());
             if (newTopCard != null && newTopCard.isFaceDown()) {
                 newTopCard.flip();
-                System.out.println("handlevalidmove: " + newTopCard.getShortName());
-                //System.out.println(validMoveSrcPile.numOfCards());
             }
         }
         doubleClick = false;
