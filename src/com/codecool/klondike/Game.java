@@ -122,9 +122,6 @@ public class Game extends Pane {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
         }
-
-
-
     };
 
     public boolean isGameWon() {
@@ -241,13 +238,7 @@ public class Game extends Pane {
         }
         doubleClick = false;
         draggedCards.clear();
-
-
-
-
-
     }
-
 
     private void initPiles() {
         stockPile = new Pile(Pile.PileType.STOCK, "Stock", STOCK_GAP);
