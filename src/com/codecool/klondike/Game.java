@@ -32,6 +32,7 @@ public class Game extends Pane {
     private static double TABLEAU_GAP = 30;
 
     private Pile validMoveSrcPile;
+    private boolean doubleClick = false;
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -50,7 +51,10 @@ public class Game extends Pane {
                     ArrayList<Card> slideCard = new ArrayList<>();
                     slideCard.add(card);
                     MouseUtil.slideToDest(slideCard, destination);
+                    doubleClick = true;
                     handleValidMove(card, destination);
+
+                    
                 }
             }
         }
@@ -68,8 +72,8 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         srcPile = card.getContainingPile();
         validMoveSrcPile = srcPile;
-        System.out.println(validMoveSrcPile.getName());
-        System.out.println(validMoveSrcPile.numOfCards());
+        System.out.println("On mouse pressed handler: " + validMoveSrcPile.getName());
+        //System.out.println(validMoveSrcPile.numOfCards());
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
@@ -215,18 +219,30 @@ public class Game extends Pane {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
         System.out.println(msg);
+        //System.out.println("Elements of validmovesrcpile: "+ validMoveSrcPile.getCards() + "validmovesrcpile: " + validMoveSrcPile.getName());
         MouseUtil.slideToDest(draggedCards, destPile);
 
-        if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
-            Card newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size());
 
-            System.out.println(validMoveSrcPile.getName());
-            if (newTopCard != null) {
+        //System.out.println("Elements of validmovesrcpile: "+ validMoveSrcPile.getCards() + "validmovesrcpile: " + validMoveSrcPile.getName());
+
+
+        if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
+            Card newTopCard;
+
+            if(!doubleClick) {
+                newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size());
+            }else {
+                newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size()+1);
+            }
+
+            System.out.println("Handlevalidmove: " + validMoveSrcPile.getName());
+            if (newTopCard != null && newTopCard.isFaceDown()) {
                 newTopCard.flip();
-                System.out.println(validMoveSrcPile.numOfCards());
+                System.out.println("handlevalidmove: " + newTopCard.getShortName());
+                //System.out.println(validMoveSrcPile.numOfCards());
             }
         }
-
+        doubleClick = false;
         draggedCards.clear();
 
 
