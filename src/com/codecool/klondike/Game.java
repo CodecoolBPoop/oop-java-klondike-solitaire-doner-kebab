@@ -150,6 +150,7 @@ public class Game extends Pane {
             card.flip();
         }
         MouseUtil.slideToDest(discardedCards, stockPile);
+        restartGame();
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
@@ -226,13 +227,7 @@ public class Game extends Pane {
                 System.out.println(validMoveSrcPile.numOfCards());
             }
         }
-
         draggedCards.clear();
-
-
-
-
-
     }
 
 
@@ -281,7 +276,6 @@ public class Game extends Pane {
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < i + 1; j++) {
                 Card card = deckIterator.next();
-                stockPile.addCard(card);
                 addMouseEventHandlers(card);
                 getChildren().add(card);
                 if (i == j) {
@@ -298,6 +292,17 @@ public class Game extends Pane {
         setBackground(new Background(new BackgroundImage(tableBackground,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+    }
+
+    public void restartGame() {
+        stockPile.clear();
+        for (int i=0; i < 7; i++) {
+            tableauPiles.get(i).clear();
+            System.out.println(tableauPiles.get(i).numOfCards());
+        }
+        getChildren().clear();
+        initPiles();
+        dealCards();
     }
 
 }
