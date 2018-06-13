@@ -21,6 +21,7 @@ public class Pile extends Pane {
     public Pile(PileType pileType, String name, double cardGap) {
         this.pileType = pileType;
         this.cardGap = cardGap;
+        this.name = name;
     }
 
     public PileType getPileType() {
@@ -40,8 +41,7 @@ public class Pile extends Pane {
     }
 
     public int numOfCards() {
-        //TODO
-        return 1;
+        return getCards().size();
     }
 
     public boolean isEmpty() {
@@ -72,6 +72,13 @@ public class Pile extends Pane {
             return null;
         else
             return cards.get(cards.size() - 1);
+    }
+
+    public Card getNthTopCard(int i) {
+        if (cards.isEmpty())
+            return null;
+        else
+            return cards.get(cards.size() - i - 1);
     }
 
     public void setBlurredBackground() {

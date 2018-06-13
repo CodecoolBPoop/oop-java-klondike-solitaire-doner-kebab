@@ -34,6 +34,8 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
 
+    private Pile validMoveSrcPile;
+
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
@@ -42,6 +44,7 @@ public class Game extends Pane {
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
+
         }
     };
 
@@ -52,10 +55,20 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
+        Pile srcPile;
+
+        Card card = (Card) e.getSource();
+        srcPile = card.getContainingPile();
+        validMoveSrcPile = srcPile;
+        System.out.println(validMoveSrcPile.getName());
+        System.out.println(validMoveSrcPile.numOfCards());
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
+        if (card.isFaceDown()) {
+            return;
+        }
         Pile activePile = card.getContainingPile();
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
@@ -63,15 +76,23 @@ public class Game extends Pane {
         double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
-        draggedCards.add(card);
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
-
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
+        List<Card> cardsOfActivePile = FXCollections.observableArrayList();
+        cardsOfActivePile = activePile.getCards();
+        boolean isUnder = false;
+        for (int i=0; i < cardsOfActivePile.size(); i++) {
+            if (cardsOfActivePile.get(i) == card) {
+                isUnder = true;
+            }
+            if (isUnder) {
+                draggedCards.add(cardsOfActivePile.get(i));
+                cardsOfActivePile.get(i).setTranslateX(offsetX);
+                cardsOfActivePile.get(i).setTranslateY(offsetY);
+                cardsOfActivePile.get(i).getDropShadow().setOffsetX(10);
+                cardsOfActivePile.get(i).getDropShadow().setOffsetY(10);
+                cardsOfActivePile.get(i).toFront();
+            }
+        }
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
@@ -80,12 +101,18 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
         //TODO
+        if (pile == null) {
+            pile = getValidIntersectingPile(card, foundationPiles);
+        }
         if (pile != null) {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards = null;
+            draggedCards.clear();
         }
+
+
+
     };
 
     public boolean isGameWon() {
@@ -113,7 +140,25 @@ public class Game extends Pane {
 
     public boolean isMoveValid(Card card, Pile destPile) {
         //TODO
-        return true;
+        if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
+            Card topCard = destPile.getTopCard();
+            if (topCard == null && card.getRank() == 1) {
+                return true;
+            } else if (topCard != null && card.getSuit() == topCard.getSuit() && card.getRank() == topCard.getRank() + 1) {
+                return true;
+            }
+        }
+        if (destPile.getPileType() == Pile.PileType.TABLEAU) {
+            Card topCard = destPile.getTopCard();
+            if (topCard == null && card.getRank() == 13) {
+                return true;
+            } else {
+                if (topCard.getRank() - card.getRank() == 1 && Card.isOppositeColor(topCard, card)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
@@ -145,7 +190,23 @@ public class Game extends Pane {
         }
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
+
+        if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
+            Card newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size());
+
+            System.out.println(validMoveSrcPile.getName());
+            if (newTopCard != null) {
+                newTopCard.flip();
+                System.out.println(validMoveSrcPile.numOfCards());
+            }
+        }
+
         draggedCards.clear();
+
+
+
+
+
     }
 
 
