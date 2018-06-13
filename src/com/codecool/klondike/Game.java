@@ -3,15 +3,17 @@ package com.codecool.klondike;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
+import javafx.stage.PopupBuilder;
+import javafx.stage.Stage;
 
 import java.util.*;
 
@@ -33,6 +35,7 @@ public class Game extends Pane {
 
     private Pile validMoveSrcPile;
     private boolean doubleClick = false;
+    private Stage stage;
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -53,6 +56,9 @@ public class Game extends Pane {
                     MouseUtil.slideToDest(slideCard, destination);
                     doubleClick = true;
                     handleValidMove(card, destination);
+                    if (isGameWon(card)) {
+                        gameWon(card);
+                    }
                 }
             }
         }
@@ -150,12 +156,26 @@ public class Game extends Pane {
                 removeMouseEventHandlers(pileCard);
             }
         }
+        winPopUp();
     }
 
     public Game() {
         deck = Card.createNewDeck();
         initPiles();
         dealCards();
+    }
+
+    public void winPopUp() {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+        VBox dialogVbox = new VBox(20);
+        dialogVbox.setAlignment(Pos.CENTER);
+        dialogVbox.getChildren().add(new Text("!!! C O N G R A T U L A T I O N S !!!"));
+        dialogVbox.getChildren().add(new Text("You have won the game!"));
+        Scene dialogScene = new Scene(dialogVbox, 300, 200);
+        dialog.setScene(dialogScene);
+        dialog.show();
     }
 
     public void addMouseEventHandlers(Card card) {
@@ -300,29 +320,29 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-        Collections.shuffle(deck);
+//        Collections.shuffle(deck);
         ArrayList<Card> slidingCard = new ArrayList<>();
         Iterator<Card> deckIterator = deck.iterator();
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < 52; i++) {
             Card card = deckIterator.next();
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         }
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < i + 1; j++) {
-                Card card = deckIterator.next();
-                stockPile.addCard(card);
-                addMouseEventHandlers(card);
-                getChildren().add(card);
-                if (i == j) {
-                    card.flip();
-                }
-                slidingCard.add(card);
-            }
-            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
-            slidingCard.clear();
-        }
+//        for (int i = 0; i < 7; i++) {
+//            for (int j = 0; j < i + 1; j++) {
+//                Card card = deckIterator.next();
+//                stockPile.addCard(card);
+//                addMouseEventHandlers(card);
+//                getChildren().add(card);
+//                if (i == j) {
+//                    card.flip();
+//                }
+//                slidingCard.add(card);
+//            }
+//            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
+//            slidingCard.clear();
+//        }
     }
 
     public void setTableBackground(Image tableBackground) {
@@ -331,4 +351,7 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
+    public void setGameStage(Stage stage) {
+        this.stage = stage;
+    }
 }
