@@ -32,6 +32,7 @@ public class Game extends Pane {
     private static double TABLEAU_GAP = 30;
 
     private Pile validMoveSrcPile;
+    private boolean doubleClick = false;
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -50,6 +51,7 @@ public class Game extends Pane {
                     ArrayList<Card> slideCard = new ArrayList<>();
                     slideCard.add(card);
                     MouseUtil.slideToDest(slideCard, destination);
+                    doubleClick = true;
                     handleValidMove(card, destination);
                 }
             }
@@ -246,14 +248,21 @@ public class Game extends Pane {
         MouseUtil.slideToDest(draggedCards, destPile);
 
         if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
-            Card newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size());
+            Card newTopCard;
 
-            System.out.println(validMoveSrcPile.getName());
-            if (newTopCard != null) {
+            if(!doubleClick) {
+                newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size());
+            }else {
+                newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size()+1);
+            }
+
+            System.out.println("Handlevalidmove: " + validMoveSrcPile.getName());
+            if (newTopCard != null && newTopCard.isFaceDown()) {
                 newTopCard.flip();
                 System.out.println(validMoveSrcPile.numOfCards());
             }
         }
+        doubleClick = false;
         draggedCards.clear();
     }
 
@@ -291,29 +300,29 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-//        Collections.shuffle(deck);
+        Collections.shuffle(deck);
         ArrayList<Card> slidingCard = new ArrayList<>();
         Iterator<Card> deckIterator = deck.iterator();
-        for (int i = 0; i < 52; i++) {
+        for (int i = 0; i < 24; i++) {
             Card card = deckIterator.next();
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         }
-//        for (int i = 0; i < 7; i++) {
-//            for (int j = 0; j < i + 1; j++) {
-//                Card card = deckIterator.next();
-//                stockPile.addCard(card);
-//                addMouseEventHandlers(card);
-//                getChildren().add(card);
-//                if (i == j) {
-//                    card.flip();
-//                }
-//                slidingCard.add(card);
-//            }
-//            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
-//            slidingCard.clear();
-//        }
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < i + 1; j++) {
+                Card card = deckIterator.next();
+                stockPile.addCard(card);
+                addMouseEventHandlers(card);
+                getChildren().add(card);
+                if (i == j) {
+                    card.flip();
+                }
+                slidingCard.add(card);
+            }
+            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
+            slidingCard.clear();
+        }
     }
 
     public void setTableBackground(Image tableBackground) {
