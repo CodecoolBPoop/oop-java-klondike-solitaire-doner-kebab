@@ -3,9 +3,11 @@ package com.codecool.klondike;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -76,8 +78,6 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         srcPile = card.getContainingPile();
         validMoveSrcPile = srcPile;
-//        System.out.println(validMoveSrcPile.getName());
-//        System.out.println(validMoveSrcPile.numOfCards());
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
@@ -163,6 +163,7 @@ public class Game extends Pane {
         deck = Card.createNewDeck();
         initPiles();
         dealCards();
+        initButtons();
     }
 
     public void winPopUp() {
@@ -286,6 +287,7 @@ public class Game extends Pane {
         draggedCards.clear();
     }
 
+    private void undo() {}
 
     private void initPiles() {
         stockPile = new Pile(Pile.PileType.STOCK, "Stock", STOCK_GAP);
@@ -332,8 +334,8 @@ public class Game extends Pane {
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < i + 1; j++) {
                 Card card = deckIterator.next();
-                stockPile.addCard(card);
                 addMouseEventHandlers(card);
+                stockPile.addCard(card);
                 getChildren().add(card);
                 if (i == j) {
                     card.flip();
@@ -343,12 +345,59 @@ public class Game extends Pane {
             MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
             slidingCard.clear();
         }
+        System.out.println(stockPile.numOfCards());
+    }
+
+    public void initButtons() {
+        Button restart_btn = new Button();
+        restart_btn.setLayoutX(455);
+        restart_btn.setLayoutY(60);
+        restart_btn.setPrefWidth(130);
+        restart_btn.setPrefHeight(50);
+        restart_btn.setText("RESTART");
+        restart_btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                restartGame();
+            }
+        });
+        getChildren().add(restart_btn);
+
+        Button undo_btn = new Button();
+        undo_btn.setLayoutX(455);
+        undo_btn.setLayoutY(130);
+        undo_btn.setPrefWidth(130);
+        undo_btn.setPrefHeight(50);
+        undo_btn.setText("UNDO");
+        undo_btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                undo();
+            }
+        });
+        getChildren().add(undo_btn);
     }
 
     public void setTableBackground(Image tableBackground) {
         setBackground(new Background(new BackgroundImage(tableBackground,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+    }
+
+    public void restartGame() {
+        stockPile.clear();
+        for (int i=0; i < 7; i++) {
+            tableauPiles.get(i).clear();
+        }
+        for (int i=0; i < 4; i++) {
+            foundationPiles.get(i).clear();
+        }
+        discardPile.clear();
+        deck = Card.createNewDeck();
+        getChildren().clear();
+        initPiles();
+        dealCards();
+        initButtons();
     }
 
     public void setGameStage(Stage stage) {
