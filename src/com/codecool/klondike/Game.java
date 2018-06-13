@@ -179,6 +179,7 @@ public class Game extends Pane {
         dialog.show();
     }
 
+
     public void addMouseEventHandlers(Card card) {
         card.setOnMousePressed(onMousePressedHandler);
         card.setOnMouseDragged(onMouseDraggedHandler);
@@ -349,9 +350,24 @@ public class Game extends Pane {
     }
 
     public void initButtons() {
+        Button menu_btn = new Button();
+        menu_btn.setLayoutX(455);
+        menu_btn.setLayoutY(30);
+        menu_btn.setPrefWidth(130);
+        menu_btn.setPrefHeight(50);
+        menu_btn.setText("MENU");
+        menu_btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Menu.menuPopUp(stage);
+            }
+        });
+        getChildren().add(menu_btn);
+
+
         Button restart_btn = new Button();
         restart_btn.setLayoutX(455);
-        restart_btn.setLayoutY(60);
+        restart_btn.setLayoutY(100);
         restart_btn.setPrefWidth(130);
         restart_btn.setPrefHeight(50);
         restart_btn.setText("RESTART");
@@ -365,7 +381,7 @@ public class Game extends Pane {
 
         Button undo_btn = new Button();
         undo_btn.setLayoutX(455);
-        undo_btn.setLayoutY(130);
+        undo_btn.setLayoutY(170);
         undo_btn.setPrefWidth(130);
         undo_btn.setPrefHeight(50);
         undo_btn.setText("UNDO");
