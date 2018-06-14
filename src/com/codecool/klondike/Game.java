@@ -43,6 +43,7 @@ public class Game extends Pane {
     private Stage stage;
 
 
+
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
@@ -299,11 +300,6 @@ public class Game extends Pane {
 
 
         MouseUtil.slideToDest(draggedCards, destPile);
-
-
-
-
-
 
         if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
             Card newTopCard;
