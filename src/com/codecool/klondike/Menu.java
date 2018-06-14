@@ -44,8 +44,8 @@ public class Menu {
         backGroundImages.setAlignment(Pos.CENTER);
         buttons.setAlignment(Pos.CENTER);
         Scene dialogScene = new Scene(dialogVbox, 700, 420);
-        initImages(Menu.backImages, backImages, cards);
-        initImages(Menu.backgroundsImages, backGroundImages, backgrounds);
+        initImages(Menu.backImages, backImages, cards, choosenSuits[0]);
+        initImages(Menu.backgroundsImages, backGroundImages, backgrounds, choosenSuits[1]);
         initButtons(stage, buttons, game);
         dialog.setScene(dialogScene);
         dialog.show();
@@ -66,12 +66,12 @@ public class Menu {
         alist.get((choosenSuits[isBackground ? 1 : 0]) - 1).setEffect(dropShadow);
     }
 
-    public static void initImages(List<Image> backImages, HBox dialogBox, List<Card> alist) {
+    public static void initImages(List<Image> backImages, HBox dialogBox, List<Card> alist, int selected) {
         for (int i = 0; i < 4; i++) {
             Card card = new Card(i + 1, backImages.get(i));
             card.setOnMouseClicked(onMouseClickedHandler);
             dialogBox.getChildren().add(card);
-            if (i == 0) {
+            if (i == selected - 1) {
                 card.setEffect(new DropShadow(20, Color.gray(0, 1)));
             }
             alist.add(card);
