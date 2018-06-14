@@ -52,7 +52,6 @@ public class Game extends Pane {
             discardedCard.add(card);
             Move discardMove = new Move(discardedCard,stockPile);
             previousMoves.add(discardMove);
-            System.out.println(previousMoves);
             //-------
 
             card.moveToPile(discardPile);
