@@ -29,7 +29,7 @@ public class Menu {
 
 
     public static void menuPopUp(Stage stage, com.codecool.klondike.Game game) {
-        init();
+        init(game);
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(stage);
@@ -103,14 +103,14 @@ public class Menu {
         return backgrounds;
     }
 
-    private static void init() {
+    private static void init(Game game) {
 
         backImages = Card.getAllBackImages();
         backgroundsImages = getAllBackgrounds();
         cards = new ArrayList<>();
         backgrounds = new ArrayList<>();
-        choosenSuits[0] = 1;
-        choosenSuits[1] = 1;
+        choosenSuits[0] = game.getCardBackImage();
+        choosenSuits[1] = game.getBackgroundImage();
 
     }
 

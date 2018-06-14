@@ -424,7 +424,13 @@ public class Game extends Pane {
         initButtons();
     }
 
-    public void setGameStage(Stage stage) {
-        this.stage = stage;
+    public int getBackgroundImage() {
+        return backgroundImage;
     }
+
+    public int getCardBackImage() {
+        return cardBackImage;
+    }
+
+
 }
