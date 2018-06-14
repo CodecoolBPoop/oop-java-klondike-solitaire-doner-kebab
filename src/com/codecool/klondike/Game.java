@@ -496,6 +496,8 @@ public class Game extends Pane {
             foundationPiles.get(i).clear();
         }
         discardPile.clear();
+        foundationPiles.clear();
+        tableauPiles.clear();
         this.setTableBackground(new Image("/table/background" + background + ".png"));
         Card.loadCardImages(cardBack);
         deck = Card.createNewDeck();
