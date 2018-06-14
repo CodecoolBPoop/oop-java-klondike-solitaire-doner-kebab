@@ -92,12 +92,6 @@ public class Pile extends Pane {
     }
 
     public void removeSpecificCard(Card cardToRemove){
-        /*for(Card card: cards){
-            if(Objects.equals(card,cardToRemove)){
-                cards.remove(card);
-            }
-        }*/
-
         for(int i = 0; i < cards.size(); i++){
             if(Objects.equals(cards.get(i), cardToRemove)){
                 cards.remove(i);

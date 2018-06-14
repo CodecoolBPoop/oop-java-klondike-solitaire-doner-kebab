@@ -1,20 +1,16 @@
 package com.codecool.klondike;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
-import javafx.stage.Popup;
-import javafx.stage.PopupBuilder;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -39,12 +35,10 @@ public class Game extends Pane {
     private boolean doubleClick = false;
     private List<Move> previousMoves = new ArrayList<>();
 
-
     private Stage stage;
 
     private int cardBackImage = 1;
     private int backgroundImage= 1;
-
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -72,7 +66,7 @@ public class Game extends Pane {
                     MouseUtil.slideToDest(slideCard, destination);
                     doubleClick = true;
                     handleValidMove(card, destination);
-                    if (isGameWon(card)) {
+                    if (isGameWon(card, destination)) {
                         gameWon(card);
                     }
                 }
@@ -135,7 +129,7 @@ public class Game extends Pane {
         }
         if (pile != null) {
             handleValidMove(card, pile);
-            if (isGameWon(card)) {
+            if (isGameWon(card, pile)) {
                 gameWon(card);
             }
         } else {
@@ -144,19 +138,21 @@ public class Game extends Pane {
         }
     };
 
-    private boolean isGameWon(Card card) {
+    private boolean isGameWon(Card card, Pile destPile) {
         for (Pile pile : foundationPiles) {
-            if (pile.isEmpty())
+            if (pile.isEmpty()) {
                 return false;
-            else if (pile.numOfCards() != 13) {
-                String kingRank = Card.Rank.valueOf("KING").toString();
-                String queenRank = Card.Rank.valueOf("QUEEN").toString();
-                String cardRank = String.valueOf(card.getRank());
-                String topCardRank = String.valueOf(pile.getTopCard().getRank());
-                if (!cardRank.equals(kingRank) || !topCardRank.equals(queenRank)) {
-                    return false;
+            } else if (destPile != pile && pile.numOfCards() != 13) {
+                return false;
+            } else {
+                    String kingRank = Card.Rank.valueOf("KING").toString();
+                    String queenRank = Card.Rank.valueOf("QUEEN").toString();
+                    String cardRank = String.valueOf(card.getRank());
+                    String topCardRank = String.valueOf(destPile.getTopCard().getRank());
+                    if (!cardRank.equals(kingRank) || !topCardRank.equals(queenRank)) {
+                        return false;
+                    }
                 }
-            }
         }
         return true;
     }
@@ -286,10 +282,6 @@ public class Game extends Pane {
         } else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
-        //System.out.println(msg);
-
-
-
 
         //Part of UNDO
         List<Card> currentDraggedCards = new ArrayList<>();
@@ -304,10 +296,6 @@ public class Game extends Pane {
 
         previousMoves.add(currentMove);
 
-        System.out.println(previousMoves);
-        //----
-
-
         MouseUtil.slideToDest(draggedCards, destPile);
 
         if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
@@ -319,10 +307,8 @@ public class Game extends Pane {
                 newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size()+1);
             }
 
-            //System.out.println("Handlevalidmove: " + validMoveSrcPile.getName());
             if (newTopCard != null && newTopCard.isFaceDown()) {
                 newTopCard.flip();
-                //System.out.println(validMoveSrcPile.numOfCards());
             }
         }
         doubleClick = false;
@@ -333,7 +319,6 @@ public class Game extends Pane {
         if(previousMoves.size() > 0) {
             Move moveToUndo = previousMoves.get(previousMoves.size() - 1);
             previousMoves.remove(previousMoves.size()-1);
-            //System.out.println(moveToUndo);
             Pile destPile = moveToUndo.getDestPile();
             List<Card> cards = moveToUndo.getCards();
             if(destPile.getPileType() == Pile.PileType.STOCK){
@@ -362,12 +347,6 @@ public class Game extends Pane {
             }
 
             MouseUtil.slideToDest(cards,destPile);
-
-
-
-
-
-
         }else{
             System.out.println("Nothing to undo");
         }
@@ -430,7 +409,6 @@ public class Game extends Pane {
             MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
             slidingCard.clear();
         }
-        System.out.println(stockPile.numOfCards());
     }
 
     public void initButtons() {
