@@ -41,7 +41,7 @@ public class Menu {
         Scene dialogScene = new Scene(dialogVbox, 960, 480);
         initImages(Menu.backImages, backImages);
         initImages(Menu.backImages, backGroundImages);
-        initImages(Menu.backImages, buttons);
+        initButtons(stage, buttons);
         dialog.setScene(dialogScene);
         dialog.show();
 
