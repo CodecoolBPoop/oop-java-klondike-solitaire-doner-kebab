@@ -39,6 +39,9 @@ public class Game extends Pane {
     private boolean doubleClick = false;
     private Stage stage;
 
+    private int cardBackImage = 1;
+    private int backgroundImage= 1;
+
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
@@ -351,6 +354,7 @@ public class Game extends Pane {
 
     public void initButtons() {
         Button menu_btn = new Button();
+        Game tempGame = this;
         menu_btn.setLayoutX(455);
         menu_btn.setLayoutY(30);
         menu_btn.setPrefWidth(130);
@@ -359,7 +363,7 @@ public class Game extends Pane {
         menu_btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Menu.menuPopUp(stage);
+                Menu.menuPopUp(stage, tempGame);
             }
         });
         getChildren().add(menu_btn);
@@ -374,7 +378,7 @@ public class Game extends Pane {
         restart_btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                restartGame();
+                restartGame(cardBackImage, backgroundImage);
             }
         });
         getChildren().add(restart_btn);
@@ -400,7 +404,9 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
-    public void restartGame() {
+    public void restartGame(int cardBack, int background) {
+        cardBackImage = cardBack;
+        backgroundImage = background;
         stockPile.clear();
         for (int i=0; i < 7; i++) {
             tableauPiles.get(i).clear();
@@ -409,6 +415,8 @@ public class Game extends Pane {
             foundationPiles.get(i).clear();
         }
         discardPile.clear();
+        this.setTableBackground(new Image("/table/background" + background + ".png"));
+        Card.loadCardImages(cardBack);
         deck = Card.createNewDeck();
         getChildren().clear();
         initPiles();
