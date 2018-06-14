@@ -226,25 +226,6 @@ public class Game extends Pane {
 
     private void autoCompleteGame() {
         Pile destPile;
-        int kings = 0;
-//        Card card = deck.get(0);
-
-//        for (int i = 1; i < 14; i++) {
-//            for (Pile pile : tableauPiles) {
-//                card = pile.getTopCard();
-//                if (card == null) {
-//                    continue;
-//                }
-//                if (card.getRank() == i) {
-//                    validMoveSrcPile = card.getContainingPile();
-//                    destPile = getValidFoundationDestinationPile(card);
-//                    autoMoveCard(card, destPile);
-//                }
-//                if (String.valueOf(card.getRank()).equals(Card.Rank.valueOf("KING").toString())) {
-//                    kings++;
-//                }
-//            }
-//        }
 
         for (Card card : deck) {
             destPile = foundationPiles.get(card.getSuit() - 1);
@@ -500,29 +481,29 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-//        Collections.shuffle(deck);
+        Collections.shuffle(deck);
         ArrayList<Card> slidingCard = new ArrayList<>();
         Iterator<Card> deckIterator = deck.iterator();
-        for (int i = 0; i < 52; i++) {
+        for (int i = 0; i < 24; i++) {
             Card card = deckIterator.next();
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         }
-//        for (int i = 0; i < 7; i++) {
-//            for (int j = 0; j < i + 1; j++) {
-//                Card card = deckIterator.next();
-//                addMouseEventHandlers(card);
-//                stockPile.addCard(card);
-//                getChildren().add(card);
-//                if (i == j) {
-//                    card.flip();
-//                }
-//                slidingCard.add(card);
-//            }
-//            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
-//            slidingCard.clear();
-//        }
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < i + 1; j++) {
+                Card card = deckIterator.next();
+                addMouseEventHandlers(card);
+                stockPile.addCard(card);
+                getChildren().add(card);
+                if (i == j) {
+                    card.flip();
+                }
+                slidingCard.add(card);
+            }
+            MouseUtil.slideToDest(slidingCard, tableauPiles.get(i));
+            slidingCard.clear();
+        }
     }
 
     public void initButtons() {

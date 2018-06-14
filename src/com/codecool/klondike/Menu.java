@@ -46,7 +46,7 @@ public class Menu {
         Scene dialogScene = new Scene(dialogVbox, 700, 420);
         initImages(Menu.backImages, backImages, cards, choosenSuits[0]);
         initImages(Menu.backgroundsImages, backGroundImages, backgrounds, choosenSuits[1]);
-        initButtons(stage, buttons, game);
+        initButtons(stage, buttons, game, dialog);
         dialog.setScene(dialogScene);
         dialog.show();
 
@@ -79,7 +79,7 @@ public class Menu {
     }
 
 
-    public static void initButtons(Stage stage, HBox dialogBox, Game game) {
+    public static void initButtons(Stage stage, HBox dialogBox, Game game, Stage dialog) {
         Button menu_btn = new Button();
         menu_btn.setLayoutX(460);
         menu_btn.setLayoutY(30);
@@ -90,6 +90,7 @@ public class Menu {
             @Override
             public void handle(ActionEvent event) {
                 game.restartGame(choosenSuits[0], choosenSuits[1]);
+                dialog.close();
             }
         });
         dialogBox.getChildren().add(menu_btn);
