@@ -62,7 +62,11 @@ public class Game extends Pane {
             Card currentPileTopCard = card.getContainingPile().getTopCard();
             if (Card.isSameSuit(card, currentPileTopCard) &&
                     card.getRank() == currentPileTopCard.getRank()) {
-                Pile destination = getValidFoundationDestinationPile(card);
+                Pile destination;
+                if (String.valueOf(card.getRank()).equals(Card.Rank.valueOf("ACE").toString()))
+                    destination = foundationPiles.get(card.getSuit() - 1);
+                else
+                    destination = getValidFoundationDestinationPile(card);
                 autoMoveCard(card, destination);
             }
         }
@@ -80,7 +84,11 @@ public class Game extends Pane {
                 continue;
             Card topCard = pile.getTopCard();
             validMoveSrcPile = topCard.getContainingPile();
-            Pile destination = getValidFoundationDestinationPile(topCard);
+            Pile destination;
+            if (String.valueOf(topCard.getRank()).equals(Card.Rank.valueOf("ACE").toString()))
+                destination = foundationPiles.get(topCard.getSuit() - 1);
+            else
+                destination = getValidFoundationDestinationPile(topCard);
             autoMoveCard(topCard, destination);
         }
     }
@@ -158,6 +166,8 @@ public class Game extends Pane {
             pile = getValidIntersectingPile(card, foundationPiles);
         }
         if (pile != null) {
+            if (String.valueOf(card.getRank()).equals(Card.Rank.valueOf("ACE").toString()))
+                pile = foundationPiles.get(card.getSuit() - 1);
             handleValidMove(card, pile);
             if (isGameWon(card, pile)) {
                 gameWon(card);
