@@ -350,7 +350,7 @@ public class Game extends Pane {
                 }
             }
 
-            if(destPile.getPileType() == Pile.PileType.DISCARD){
+            if(destPile.getPileType() == Pile.PileType.DISCARD && cards.size() > 1){
                 for(Card card: cards){
                     card.flip();
                 }
