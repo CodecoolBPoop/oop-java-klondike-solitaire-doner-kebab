@@ -212,6 +212,12 @@ public class Game extends Pane {
         for (Card card : discardedCards) {
             card.flip();
         }
+
+        //Part of UNDO
+        List<Card> undoCards = stockPile.getCards();
+        //Collections.reverse(undoCards);
+        previousMoves.add(new Move(undoCards,discardPile));
+        //------
         MouseUtil.slideToDest(discardedCards, stockPile);
     }
 
@@ -342,6 +348,13 @@ public class Game extends Pane {
                     cardToUnflip = destPile.getTopCard();
                     cardToUnflip.flip();
                 }
+            }
+
+            if(destPile.getPileType() == Pile.PileType.DISCARD){
+                for(Card card: cards){
+                    card.flip();
+                }
+                Collections.reverse(cards);
             }
 
             MouseUtil.slideToDest(cards,destPile);
