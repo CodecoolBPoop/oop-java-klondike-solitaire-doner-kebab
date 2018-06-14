@@ -42,6 +42,9 @@ public class Game extends Pane {
 
     private Stage stage;
 
+    private int cardBackImage = 1;
+    private int backgroundImage= 1;
+
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -189,6 +192,7 @@ public class Game extends Pane {
         dialog.setScene(dialogScene);
         dialog.show();
     }
+
 
     public void addMouseEventHandlers(Card card) {
         card.setOnMousePressed(onMousePressedHandler);
@@ -430,23 +434,39 @@ public class Game extends Pane {
     }
 
     public void initButtons() {
+        Button menu_btn = new Button();
+        Game tempGame = this;
+        menu_btn.setLayoutX(455);
+        menu_btn.setLayoutY(30);
+        menu_btn.setPrefWidth(130);
+        menu_btn.setPrefHeight(50);
+        menu_btn.setText("MENU");
+        menu_btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Menu.menuPopUp(stage, tempGame);
+            }
+        });
+        getChildren().add(menu_btn);
+
+
         Button restart_btn = new Button();
         restart_btn.setLayoutX(455);
-        restart_btn.setLayoutY(60);
+        restart_btn.setLayoutY(100);
         restart_btn.setPrefWidth(130);
         restart_btn.setPrefHeight(50);
         restart_btn.setText("RESTART");
         restart_btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                restartGame();
+                restartGame(cardBackImage, backgroundImage);
             }
         });
         getChildren().add(restart_btn);
 
         Button undo_btn = new Button();
         undo_btn.setLayoutX(455);
-        undo_btn.setLayoutY(130);
+        undo_btn.setLayoutY(170);
         undo_btn.setPrefWidth(130);
         undo_btn.setPrefHeight(50);
         undo_btn.setText("UNDO");
@@ -465,7 +485,9 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
-    public void restartGame() {
+    public void restartGame(int cardBack, int background) {
+        cardBackImage = cardBack;
+        backgroundImage = background;
         stockPile.clear();
         for (int i=0; i < 7; i++) {
             tableauPiles.get(i).clear();
@@ -474,6 +496,8 @@ public class Game extends Pane {
             foundationPiles.get(i).clear();
         }
         discardPile.clear();
+        this.setTableBackground(new Image("/table/background" + background + ".png"));
+        Card.loadCardImages(cardBack);
         deck = Card.createNewDeck();
         getChildren().clear();
         initPiles();
@@ -481,7 +505,13 @@ public class Game extends Pane {
         initButtons();
     }
 
-    public void setGameStage(Stage stage) {
-        this.stage = stage;
+    public int getBackgroundImage() {
+        return backgroundImage;
     }
+
+    public int getCardBackImage() {
+        return cardBackImage;
+    }
+
+
 }

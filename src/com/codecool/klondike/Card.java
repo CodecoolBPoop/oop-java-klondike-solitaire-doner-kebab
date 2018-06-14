@@ -34,9 +34,19 @@ public class Card extends ImageView {
         setEffect(dropShadow);
     }
 
+    public Card(int suit, Image backImage) {
+        this.suit = suit;
+        this.dropShadow = new DropShadow(2, Color.gray(0, 0.35));
+        backFace = backImage;
+        setImage(backImage);
+        setEffect(dropShadow);
+    }
+
     public int getSuit() {
         return suit;
     }
+
+    public double getBackFaceWidth() { return backFace.getRequestedWidth(); }
 
     public int getRank() {
         return rank;
@@ -89,10 +99,7 @@ public class Card extends ImageView {
         if ((card1.suit == 1 || card1.suit == 2) && (card2.suit == 3 | card2.suit == 4)) {
             return true;
         }
-        if ((card1.suit == 3 || card1.suit == 4) && (card2.suit == 1 | card2.suit == 2)) {
-            return true;
-        }
-        return false;
+        return (card1.suit == 3 || card1.suit == 4) && (card2.suit == 1 | card2.suit == 2);
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
@@ -109,8 +116,8 @@ public class Card extends ImageView {
         return result;
     }
 
-    public static void loadCardImages() {
-        cardBackImage = new Image("card_images/card_back2.png", 150, 215, false, false);
+    public static void loadCardImages(int cardBack) {
+        cardBackImage = new Image("card_images/card_back"+ cardBack + ".png", 150, 215, false, false);
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
                 String cardName = suit.toString() + rank;
@@ -120,6 +127,15 @@ public class Card extends ImageView {
             }
         }
     }
+
+    public static List<Image> getAllBackImages() {
+        List<Image> backImages = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            backImages.add(new Image("card_images/card_back" + (i + 1) + ".png", 100, 140, false, false));
+        }
+        return backImages;
+    }
+
     public enum Suit{
         HEARTS ("hearts", "1"),
         DIAMONDS ("diamonds","2"),
