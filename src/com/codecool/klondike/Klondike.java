@@ -3,9 +3,8 @@ package com.codecool.klondike;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 public class Klondike extends Application {
@@ -26,7 +25,14 @@ public class Klondike extends Application {
         primaryStage.setTitle("Klondike Solitaire");
         primaryStage.setScene(new Scene(game, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
-
+        primaryStage.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED, new EventHandler<javafx.scene.input.MouseEvent>() {
+            @Override
+            public void handle(javafx.scene.input.MouseEvent event) {
+                    if (event.getButton() == MouseButton.SECONDARY) {
+                        System.out.println("Right button clicked");
+                        game.handleRightMouseClick();
+                    }
+            }
+        });
     }
-
 }

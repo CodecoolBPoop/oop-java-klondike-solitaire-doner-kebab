@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
@@ -60,19 +61,34 @@ public class Game extends Pane {
             if (Card.isSameSuit(card, currentPileTopCard) &&
                     card.getRank() == currentPileTopCard.getRank()) {
                 Pile destination = getValidFoundationDestinationPile(card);
-                if (destination != null) {
-                    ArrayList<Card> slideCard = new ArrayList<>();
-                    slideCard.add(card);
-                    MouseUtil.slideToDest(slideCard, destination);
-                    doubleClick = true;
-                    handleValidMove(card, destination);
-                    if (isGameWon(card, destination)) {
-                        gameWon(card);
-                    }
-                }
+                autoMoveCard(card, destination);
             }
         }
     };
+
+    public void handleRightMouseClick() {
+        for (Pile pile : tableauPiles) {
+            if (pile.isEmpty())
+                continue;
+            Card topCard = pile.getTopCard();
+            validMoveSrcPile = topCard.getContainingPile();
+            Pile destination = getValidFoundationDestinationPile(topCard);
+            autoMoveCard(topCard, destination);
+        }
+    }
+
+    private void autoMoveCard(Card card, Pile destination) {
+        if (destination != null) {
+            ArrayList<Card> slideCard = new ArrayList<>();
+            slideCard.add(card);
+            MouseUtil.slideToDest(slideCard, destination);
+            doubleClick = true;
+            handleValidMove(card, destination);
+            if (isGameWon(card, destination)) {
+                gameWon(card);
+            }
+        }
+    }
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
         refillStockFromDiscard();
