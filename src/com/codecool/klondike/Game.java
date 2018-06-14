@@ -321,6 +321,8 @@ public class Game extends Pane {
             previousMoves.remove(previousMoves.size()-1);
             Pile destPile = moveToUndo.getDestPile();
             List<Card> cards = moveToUndo.getCards();
+            Pile srcPile = cards.get(0).getContainingPile();
+
             if(destPile.getPileType() == Pile.PileType.STOCK){
                 for(Card card: cards){
                     card.flip();
@@ -332,11 +334,13 @@ public class Game extends Pane {
 
                 if(cards.size() == 1) {
                     cardToUnflip = destPile.getNthTopCard(cards.size() - 1);
+                    //cardToUnflip = destPile.getTopCard();
                     cardToUnflip.flip();
                 }else {
                     cardToUnflip = destPile.getTopCard();
                     cardToUnflip.flip();
                 }
+
             }
 
             if(destPile.getPileType() == Pile.PileType.DISCARD && cards.size() > 1){
@@ -347,6 +351,14 @@ public class Game extends Pane {
             }
 
             MouseUtil.slideToDest(cards,destPile);
+
+            if(srcPile.getPileType() == Pile.PileType.TABLEAU  && srcPile.getNthTopCard(1).isFaceDown()){
+                srcPile.getNthTopCard(1).flip();
+            }
+
+
+
+
         }else{
             System.out.println("Nothing to undo");
         }
