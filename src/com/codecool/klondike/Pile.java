@@ -76,7 +76,7 @@ public class Pile extends Pane {
     }
 
     public Card getNthTopCard(int i) {
-        if (cards.isEmpty())
+        if (cards.isEmpty() || i == cards.size())
             return null;
         else
             return cards.get(cards.size() - i - 1);
