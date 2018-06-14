@@ -38,6 +38,10 @@ public class MouseUtil {
         double targetX;
         double targetY;
 
+        /*for(int i = 0; i < cardsToSlide.size(); i++){
+            cardsToSlide.get(i).setContainingPile(destPile);
+        }*/
+
         if (destPile.isEmpty()) {
             targetX = destPile.getLayoutX();
             targetY = destPile.getLayoutY();
@@ -51,8 +55,9 @@ public class MouseUtil {
             double sourceX = currentCard.getLayoutX() + currentCard.getTranslateX();
             double sourceY = currentCard.getLayoutY() + currentCard.getTranslateY();
 
+
             animateCardMovement(currentCard, sourceX, sourceY, targetX,
-                    targetY + ((destPile.isEmpty() ? i : i + 1) * destCardGap), Duration.millis(1150),
+                    targetY + ((destPile.isEmpty() ? i : i + 1) * destCardGap), Duration.millis(150),
                     e -> {
                         currentCard.moveToPile(destPile);
                         currentCard.getDropShadow().setRadius(2);

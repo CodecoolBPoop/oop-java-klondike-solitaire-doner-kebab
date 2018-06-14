@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 public class Pile extends Pane {
 
@@ -21,6 +22,7 @@ public class Pile extends Pane {
     public Pile(PileType pileType, String name, double cardGap) {
         this.pileType = pileType;
         this.cardGap = cardGap;
+        this.name = name;
     }
 
     public PileType getPileType() {
@@ -40,8 +42,7 @@ public class Pile extends Pane {
     }
 
     public int numOfCards() {
-        //TODO
-        return 1;
+        return getCards().size();
     }
 
     public boolean isEmpty() {
@@ -49,7 +50,7 @@ public class Pile extends Pane {
     }
 
     public void clear() {
-        //TODO
+         cards = FXCollections.observableArrayList();
     }
 
     public void addCard(Card card) {
@@ -74,6 +75,13 @@ public class Pile extends Pane {
             return cards.get(cards.size() - 1);
     }
 
+    public Card getNthTopCard(int i) {
+        if (cards.isEmpty() || i == cards.size())
+            return null;
+        else
+            return cards.get(cards.size() - i - 1);
+    }
+
     public void setBlurredBackground() {
         setPrefSize(Card.WIDTH, Card.HEIGHT);
         BackgroundFill backgroundFill = new BackgroundFill(Color.gray(0.0, 0.2), null, null);
@@ -81,6 +89,20 @@ public class Pile extends Pane {
         GaussianBlur gaussianBlur = new GaussianBlur(10);
         setBackground(background);
         setEffect(gaussianBlur);
+    }
+
+    public void removeSpecificCard(Card cardToRemove){
+        /*for(Card card: cards){
+            if(Objects.equals(card,cardToRemove)){
+                cards.remove(card);
+            }
+        }*/
+
+        for(int i = 0; i < cards.size(); i++){
+            if(Objects.equals(cards.get(i), cardToRemove)){
+                cards.remove(i);
+            }
+        }
     }
 
     public enum PileType {
