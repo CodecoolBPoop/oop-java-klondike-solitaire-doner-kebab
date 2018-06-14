@@ -79,6 +79,7 @@ public class Game extends Pane {
 
         topCard = discardPile.getTopCard();
         if (topCard != null) {
+            validMoveSrcPile = topCard.getContainingPile();
             if (String.valueOf(topCard.getRank()).equals(Card.Rank.valueOf("ACE").toString()))
                 destination = foundationPiles.get(topCard.getSuit() - 1);
             else
@@ -181,6 +182,9 @@ public class Game extends Pane {
             if (isGameWon(card, pile)) {
                 gameWon(card);
             }
+            if (isGameWinnable()) {
+                autoCompleteGame();
+            }
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
@@ -204,6 +208,49 @@ public class Game extends Pane {
                 }
         }
         return true;
+    }
+
+    private boolean isGameWinnable() {
+        if (!stockPile.isEmpty() || discardPile.getCards().size() > 1)
+            return false;
+        else {
+            List<Card> pileCards;
+            for (Pile pile : tableauPiles) {
+                pileCards = pile.getCards();
+                for (Card card : pileCards)
+                    if (card.isFaceDown()) return false;
+            }
+        }
+        return true;
+    }
+
+    private void autoCompleteGame() {
+        Pile destPile;
+        int kings = 0;
+//        Card card = deck.get(0);
+
+//        for (int i = 1; i < 14; i++) {
+//            for (Pile pile : tableauPiles) {
+//                card = pile.getTopCard();
+//                if (card == null) {
+//                    continue;
+//                }
+//                if (card.getRank() == i) {
+//                    validMoveSrcPile = card.getContainingPile();
+//                    destPile = getValidFoundationDestinationPile(card);
+//                    autoMoveCard(card, destPile);
+//                }
+//                if (String.valueOf(card.getRank()).equals(Card.Rank.valueOf("KING").toString())) {
+//                    kings++;
+//                }
+//            }
+//        }
+
+        for (Card card : deck) {
+            destPile = foundationPiles.get(card.getSuit() - 1);
+            autoMoveCard(card, destPile);
+        }
+        gameWon(deck.get(0));
     }
 
     private void gameWon(Card card) {
