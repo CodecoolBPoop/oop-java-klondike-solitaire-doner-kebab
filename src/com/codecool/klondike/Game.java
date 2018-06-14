@@ -37,12 +37,23 @@ public class Game extends Pane {
 
     private Pile validMoveSrcPile;
     private boolean doubleClick = false;
+    private List<Move> previousMoves = new ArrayList<>();
+
+
     private Stage stage;
+
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
+            //Part of UNDO
+            List<Card> discardedCard = new ArrayList<>();
+            discardedCard.add(card);
+            Move discardMove = new Move(discardedCard,stockPile);
+            previousMoves.add(discardMove);
+            //-------
+
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -201,6 +212,12 @@ public class Game extends Pane {
         for (Card card : discardedCards) {
             card.flip();
         }
+
+        //Part of UNDO
+        List<Card> undoCards = stockPile.getCards();
+        //Collections.reverse(undoCards);
+        previousMoves.add(new Move(undoCards,discardPile));
+        //------
         MouseUtil.slideToDest(discardedCards, stockPile);
     }
 
@@ -265,7 +282,28 @@ public class Game extends Pane {
         } else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
-        System.out.println(msg);
+        //System.out.println(msg);
+
+
+
+
+        //Part of UNDO
+        List<Card> currentDraggedCards = new ArrayList<>();
+        if(draggedCards.size() > 0) {
+            currentDraggedCards.addAll(draggedCards);
+        }else{
+            currentDraggedCards.add(card);
+        }
+
+        Move currentMove;
+        currentMove = new Move(currentDraggedCards,validMoveSrcPile);
+
+        previousMoves.add(currentMove);
+
+        System.out.println(previousMoves);
+        //----
+
+
         MouseUtil.slideToDest(draggedCards, destPile);
 
         if(validMoveSrcPile.getPileType() == Pile.PileType.TABLEAU && validMoveSrcPile.numOfCards() > 1) {
@@ -277,17 +315,60 @@ public class Game extends Pane {
                 newTopCard = validMoveSrcPile.getNthTopCard(draggedCards.size()+1);
             }
 
-            System.out.println("Handlevalidmove: " + validMoveSrcPile.getName());
+            //System.out.println("Handlevalidmove: " + validMoveSrcPile.getName());
             if (newTopCard != null && newTopCard.isFaceDown()) {
                 newTopCard.flip();
-                System.out.println(validMoveSrcPile.numOfCards());
+                //System.out.println(validMoveSrcPile.numOfCards());
             }
         }
         doubleClick = false;
         draggedCards.clear();
     }
 
-    private void undo() {}
+    private void undo() {
+        if(previousMoves.size() > 0) {
+            Move moveToUndo = previousMoves.get(previousMoves.size() - 1);
+            previousMoves.remove(previousMoves.size()-1);
+            //System.out.println(moveToUndo);
+            Pile destPile = moveToUndo.getDestPile();
+            List<Card> cards = moveToUndo.getCards();
+            if(destPile.getPileType() == Pile.PileType.STOCK){
+                for(Card card: cards){
+                    card.flip();
+                }
+            }
+
+            if(destPile.getPileType() == Pile.PileType.TABLEAU && destPile.numOfCards() > 0){
+                Card cardToUnflip;
+
+                if(cards.size() == 1) {
+                    cardToUnflip = destPile.getNthTopCard(cards.size() - 1);
+                    cardToUnflip.flip();
+                }else {
+                    cardToUnflip = destPile.getTopCard();
+                    cardToUnflip.flip();
+                }
+            }
+
+            if(destPile.getPileType() == Pile.PileType.DISCARD && cards.size() > 1){
+                for(Card card: cards){
+                    card.flip();
+                }
+                Collections.reverse(cards);
+            }
+
+            MouseUtil.slideToDest(cards,destPile);
+
+
+
+
+
+
+        }else{
+            System.out.println("Nothing to undo");
+        }
+
+    }
 
     private void initPiles() {
         stockPile = new Pile(Pile.PileType.STOCK, "Stock", STOCK_GAP);
