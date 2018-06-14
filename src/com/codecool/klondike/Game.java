@@ -43,6 +43,8 @@ public class Game extends Pane {
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
+        if (e.getButton() == MouseButton.SECONDARY)
+            return;
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
             //Part of UNDO
@@ -67,6 +69,12 @@ public class Game extends Pane {
     };
 
     public void handleRightMouseClick() {
+        List<Pile> emptyFoundations = new ArrayList<>();
+        for (int i = 0; i < foundationPiles.size(); i++) {
+            if (foundationPiles.get(i).isEmpty()) {
+                emptyFoundations.add(foundationPiles.get(i));
+            }
+        }
         for (Pile pile : tableauPiles) {
             if (pile.isEmpty())
                 continue;
@@ -95,6 +103,9 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
+        if (e.getButton() == MouseButton.SECONDARY)
+            return;
+
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
         Pile srcPile;
@@ -105,6 +116,9 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
+        if (e.getButton() == MouseButton.SECONDARY)
+            return;
+
         Card card = (Card) e.getSource();
         if (card.isFaceDown()) {
             return;
