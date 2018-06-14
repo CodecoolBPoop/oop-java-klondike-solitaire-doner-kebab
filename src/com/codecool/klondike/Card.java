@@ -78,7 +78,6 @@ public class Card extends ImageView {
             Pile contPile;
             contPile = this.getContainingPile();
             contPile.removeSpecificCard(this);
-            //System.out.println("Elements of contpile now: " + contPile.getCards() + " contpile name: " + contPile.getName());
         }else {
             this.getContainingPile().getCards().remove(this);
         }
@@ -156,7 +155,6 @@ public class Card extends ImageView {
         public String getId(){
             return id;
         }
-
     }
 
     public enum Rank{
@@ -184,9 +182,5 @@ public class Card extends ImageView {
         public String toString(){
             return rank;
         }
-
     }
-
-
-
 }

@@ -38,10 +38,6 @@ public class MouseUtil {
         double targetX;
         double targetY;
 
-        /*for(int i = 0; i < cardsToSlide.size(); i++){
-            cardsToSlide.get(i).setContainingPile(destPile);
-        }*/
-
         if (destPile.isEmpty()) {
             targetX = destPile.getLayoutX();
             targetY = destPile.getLayoutY();
