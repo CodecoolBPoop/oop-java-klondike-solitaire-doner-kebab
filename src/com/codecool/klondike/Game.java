@@ -117,6 +117,8 @@ public class Game extends Pane {
     }
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
+        if (e.getButton() == MouseButton.SECONDARY)
+            return;
         refillStockFromDiscard();
     };
 
